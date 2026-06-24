@@ -66,6 +66,20 @@
   .status-val.offline{color:var(--amber);}
   .status-val.err{color:var(--danger);}
 
+  /* ===== SIDEBAR TABS ===== */
+  .sidebar-tabs{display:flex;gap:4px;margin-bottom:14px;}
+  .sidebar-tab{
+    flex:1;background:transparent;border:1px solid var(--border);color:var(--text-dim);
+    border-radius:5px;padding:6px;font-size:11px;cursor:pointer;font-family:'JetBrains Mono',monospace;
+    text-transform:uppercase;letter-spacing:0.06em;
+  }
+  .sidebar-tab.active{background:var(--card);border-color:var(--sage);color:var(--sage-bright);}
+  .sidebar-tab:hover:not(.active){border-color:var(--sage);color:var(--text);}
+
+  .sidebar-panel{display:none;flex:1;flex-direction:column;overflow:hidden;}
+  .sidebar-panel.active{display:flex;}
+
+  /* ===== CHAT PANEL ===== */
   .field-label{
     font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-faint);
     text-transform:uppercase;letter-spacing:0.08em;margin:14px 0 6px;
@@ -88,13 +102,39 @@
   .pill.active{background:var(--sage);border-color:var(--sage);color:#0F1411;}
   .pill:hover:not(.active){border-color:var(--sage);}
 
+  /* Context bar */
+  .ctx-bar-wrap{margin-top:14px;}
+  .ctx-bar-label{
+    font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-faint);
+    text-transform:uppercase;letter-spacing:0.08em;
+    display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;
+  }
+  .ctx-bar-label span{font-size:10px;}
+  .ctx-bar-track{background:var(--card);border:1px solid var(--border);border-radius:3px;height:5px;overflow:hidden;}
+  .ctx-bar-fill{height:100%;background:var(--sage);border-radius:3px;transition:width 0.3s, background 0.3s;}
+  .ctx-bar-fill.warn{background:var(--amber);}
+  .ctx-bar-fill.crit{background:var(--danger);}
+
   #thread-list{flex:1;overflow-y:auto;margin-top:14px;display:flex;flex-direction:column;gap:4px;}
   .thread-item{
     padding:8px 10px;border-radius:5px;font-size:12.5px;color:var(--text-dim);cursor:pointer;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1px solid transparent;
+    display:flex;align-items:center;gap:6px;border:1px solid transparent;
+    position:relative;
   }
   .thread-item:hover{background:var(--card);}
   .thread-item.active{background:var(--card);border-color:var(--border);color:var(--text);}
+  .thread-title{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .thread-del{
+    display:none;background:none;border:none;color:var(--text-faint);cursor:pointer;
+    font-size:14px;line-height:1;padding:0 2px;flex-shrink:0;
+  }
+  .thread-del:hover{color:var(--danger);}
+  .thread-item:hover .thread-del{display:block;}
+  .thread-rename-input{
+    flex:1;background:var(--bg);border:1px solid var(--sage);color:var(--text);
+    border-radius:3px;padding:1px 5px;font-size:12.5px;font-family:inherit;
+  }
+  .thread-rename-input:focus{outline:none;}
 
   .sidebar-bottom{display:flex;gap:8px;margin-top:10px;}
   button.ghost{
@@ -102,6 +142,45 @@
     border-radius:5px;padding:8px;font-size:12px;cursor:pointer;font-family:inherit;
   }
   button.ghost:hover{border-color:var(--sage);color:var(--text);}
+
+  /* ===== SETTINGS PANEL ===== */
+  .settings-scroll{flex:1;overflow-y:auto;padding-right:2px;}
+  .settings-section{margin-bottom:18px;}
+  .settings-section-title{
+    font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-faint);
+    text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;
+  }
+  .mode-setting{
+    background:var(--card);border:1px solid var(--border);border-radius:6px;
+    padding:10px;margin-bottom:8px;
+  }
+  .mode-setting-header{
+    display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;
+  }
+  .mode-name-input{
+    background:transparent;border:none;color:var(--sage-bright);font-family:'JetBrains Mono',monospace;
+    font-size:12px;text-transform:uppercase;letter-spacing:0.08em;padding:0;width:100px;
+  }
+  .mode-name-input:focus{outline:none;border-bottom:1px solid var(--sage);}
+  .mode-del-btn{
+    background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:14px;padding:0;
+  }
+  .mode-del-btn:hover{color:var(--danger);}
+  .mode-prompt-textarea{
+    width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text-dim);
+    border-radius:4px;padding:8px;font-size:12px;font-family:'IBM Plex Sans',sans-serif;
+    resize:vertical;line-height:1.5;min-height:80px;
+  }
+  .mode-prompt-textarea:focus{outline:none;border-color:var(--sage);color:var(--text);}
+  .add-mode-btn{
+    width:100%;background:transparent;border:1px dashed var(--border);color:var(--text-faint);
+    border-radius:5px;padding:8px;font-size:12px;cursor:pointer;font-family:inherit;
+  }
+  .add-mode-btn:hover{border-color:var(--sage);color:var(--text-dim);}
+
+  .settings-info{
+    font-size:11px;color:var(--text-faint);line-height:1.6;font-family:'JetBrains Mono',monospace;
+  }
 
   /* ===== MAIN ===== */
   #main{flex:1;display:flex;flex-direction:column;min-width:0;}
@@ -170,6 +249,8 @@
   #send-btn{background:var(--sage);border:none;color:#0F1411;}
   #send-btn:hover{background:var(--sage-bright);}
   #send-btn:disabled{opacity:0.4;cursor:default;}
+  #stop-btn{background:var(--danger);border:none;color:#fff;display:none;}
+  #stop-btn:hover{opacity:0.85;}
 
   #hint{font-size:11px;color:var(--text-faint);text-align:center;margin-top:8px;font-family:'JetBrains Mono',monospace;}
 
@@ -185,6 +266,67 @@
     background:rgba(176,92,82,0.12);border:1px solid rgba(176,92,82,0.4);color:#D49389;
     border-radius:6px;padding:10px 14px;font-size:12.5px;max-width:720px;margin:0 auto 10px;
     font-family:'JetBrains Mono',monospace;
+  }
+
+  /* ===== THINK BLOCK ===== */
+  .think-block{
+    margin-bottom:10px;
+    border:1px solid var(--border);
+    border-radius:6px;
+    overflow:hidden;
+    font-size:12.5px;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .think-header{
+    display:flex;align-items:center;gap:7px;
+    padding:7px 11px;
+    background:rgba(92,122,107,0.08);
+    cursor:pointer;
+    user-select:none;
+    color:var(--text-faint);
+    font-size:11px;letter-spacing:0.06em;text-transform:uppercase;
+  }
+  .think-header:hover{ color:var(--text-dim); }
+  .think-chevron{
+    transition:transform 0.2s;flex-shrink:0;
+    color:var(--text-faint);
+  }
+  .think-block.open .think-chevron{ transform:rotate(90deg); }
+  .think-dot{
+    width:5px;height:5px;border-radius:50%;
+    background:var(--sage);flex-shrink:0;
+  }
+  .think-dot.pulsing{
+    animation:pulse 1.4s infinite;
+  }
+  .think-label{ flex:1; }
+  .think-tokens{ color:var(--text-faint);font-size:10px; }
+  .think-body{
+    display:none;
+    padding:10px 12px;
+    color:var(--text-dim);
+    line-height:1.65;
+    background:rgba(0,0,0,0.15);
+    border-top:1px solid var(--border);
+    white-space:pre-wrap;
+    word-break:break-word;
+    max-height:320px;
+    overflow-y:auto;
+  }
+  .think-block.open .think-body{ display:block; }
+
+  /* Keyboard shortcut hint tooltip */
+  .kb-hint{
+    position:fixed;bottom:80px;right:24px;
+    background:var(--card);border:1px solid var(--border);border-radius:6px;
+    padding:10px 14px;font-size:11px;font-family:'JetBrains Mono',monospace;
+    color:var(--text-dim);line-height:1.9;opacity:0;pointer-events:none;
+    transition:opacity 0.2s;z-index:100;
+  }
+  .kb-hint.show{opacity:1;}
+  .kb-hint kbd{
+    background:var(--border);border-radius:3px;padding:1px 5px;color:var(--text);
+    font-size:10px;margin-right:6px;
   }
 </style>
 </head>
@@ -208,27 +350,78 @@
     </div>
   </div>
 
-  <div class="field-label">model</div>
-  <select id="model-select"><option>connect to load models</option></select>
-
-  <div class="field-label">mode</div>
-  <div class="mode-pills" id="mode-pills">
-    <button class="pill active" data-mode="tutor">tutor</button>
-    <button class="pill" data-mode="quick">quick</button>
-    <button class="pill" data-mode="general">general</button>
+  <div class="sidebar-tabs">
+    <button class="sidebar-tab active" data-tab="chat">chat</button>
+    <button class="sidebar-tab" data-tab="settings">settings</button>
   </div>
 
-  <div class="field-label">creativity</div>
-  <div class="slider-row">
-    <input type="range" id="temp-slider" min="0" max="1" step="0.1" value="0.7">
-    <span class="slider-val" id="temp-val">0.7</span>
+  <!-- CHAT PANEL -->
+  <div class="sidebar-panel active" id="panel-chat">
+    <div class="field-label">model</div>
+    <select id="model-select"><option>connect to load models</option></select>
+
+    <div class="field-label">mode</div>
+    <div class="mode-pills" id="mode-pills"></div>
+
+    <div class="field-label">creativity</div>
+    <div class="slider-row">
+      <input type="range" id="temp-slider" min="0" max="1" step="0.1" value="0.7">
+      <span class="slider-val" id="temp-val">0.7</span>
+    </div>
+
+    <div class="field-label">reasoning</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:12px;color:var(--text-dim);">think before answering</span>
+      <button id="think-toggle" onclick="toggleThink()" style="
+        background:var(--card);border:1px solid var(--border);border-radius:12px;
+        width:38px;height:20px;cursor:pointer;position:relative;flex-shrink:0;
+        transition:background 0.2s,border-color 0.2s;
+      ">
+        <span id="think-knob" style="
+          position:absolute;top:2px;left:2px;width:14px;height:14px;
+          border-radius:50%;background:var(--text-faint);
+          transition:transform 0.2s,background 0.2s;display:block;
+        "></span>
+      </button>
+    </div>
+
+    <div class="ctx-bar-wrap">
+      <div class="ctx-bar-label">
+        <span>context</span>
+        <span id="ctx-tokens">0 / ~4k tok</span>
+      </div>
+      <div class="ctx-bar-track">
+        <div class="ctx-bar-fill" id="ctx-bar" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div id="thread-list"></div>
+
+    <div class="sidebar-bottom">
+      <button class="ghost" id="new-thread-btn">+ new</button>
+      <button class="ghost" id="export-btn">export</button>
+    </div>
   </div>
 
-  <div id="thread-list"></div>
-
-  <div class="sidebar-bottom">
-    <button class="ghost" id="new-thread-btn">+ new chat</button>
-    <button class="ghost" id="export-btn">export</button>
+  <!-- SETTINGS PANEL -->
+  <div class="sidebar-panel" id="panel-settings">
+    <div class="settings-scroll">
+      <div class="settings-section">
+        <div class="settings-section-title">mode prompts</div>
+        <div id="mode-settings-list"></div>
+        <button class="add-mode-btn" id="add-mode-btn">+ add mode</button>
+      </div>
+      <div class="settings-section">
+        <div class="settings-section-title">keyboard shortcuts</div>
+        <div class="settings-info">
+          <kbd style="background:var(--border);border-radius:3px;padding:1px 5px;">/</kbd> focus input<br>
+          <kbd style="background:var(--border);border-radius:3px;padding:1px 5px;">Ctrl N</kbd> new chat<br>
+          <kbd style="background:var(--border);border-radius:3px;padding:1px 5px;">Esc</kbd> stop generation<br>
+          <kbd style="background:var(--border);border-radius:3px;padding:1px 5px;">Ctrl E</kbd> export thread<br>
+          <kbd style="background:var(--border);border-radius:3px;padding:1px 5px;">Ctrl ↑↓</kbd> switch thread
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -244,47 +437,214 @@
     <div id="composer-inner">
       <div id="attach-row"></div>
       <div id="input-bar">
-        <button class="icon-btn" id="file-btn" title="Attach file" aria-label="Attach file">
+        <button class="icon-btn" id="file-btn" title="Attach file (text, code, markdown…)" aria-label="Attach file">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
         </button>
-        <input type="file" id="file-input" multiple style="display:none">
-        <textarea id="msg-input" rows="1" placeholder="Ask anything — math, chemistry, general questions…"></textarea>
-        <button class="icon-btn" id="send-btn" title="Send" aria-label="Send message">
+        <input type="file" id="file-input" multiple accept=".txt,.md,.markdown,.csv,.json,.yaml,.yml,.toml,.xml,.html,.htm,.css,.js,.ts,.jsx,.tsx,.py,.rb,.rs,.go,.java,.c,.cpp,.h,.hpp,.sh,.bash,.zsh,.env,.log,.ini,.cfg,.conf,.sql,.graphql,.proto,.tf,.dockerfile,.r,.m,.tex,.bib,.org,.rst,.adoc,.ipynb" style="display:none">
+        <textarea id="msg-input" rows="1" placeholder="Ask anything…"></textarea>
+        <button class="icon-btn" id="stop-btn" title="Stop generation (Esc)" aria-label="Stop generation">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+        </button>
+        <button class="icon-btn" id="send-btn" title="Send (Enter)" aria-label="Send message">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
-      <div id="hint">everything here stays on this machine — nothing is sent over the network except to localhost</div>
+      <div id="hint">everything stays on this machine — nothing leaves localhost &nbsp;·&nbsp; <span style="cursor:pointer;text-decoration:underline;" onclick="toggleKbHint()">shortcuts</span></div>
     </div>
   </div>
+</div>
+
+<div class="kb-hint" id="kb-hint">
+  <div><kbd>/</kbd> focus input</div>
+  <div><kbd>Ctrl N</kbd> new chat</div>
+  <div><kbd>Esc</kbd> stop / close</div>
+  <div><kbd>Ctrl E</kbd> export thread</div>
+  <div><kbd>Ctrl ↑</kbd> prev thread</div>
+  <div><kbd>Ctrl ↓</kbd> next thread</div>
 </div>
 
 <script>
 const OLLAMA_URL = 'http://localhost:11434';
 
-const MODE_PROMPTS = {
-  tutor: "You are a patient tutor. Explain concepts step by step, show your reasoning, and check understanding before moving on. For math, show full working.",
-  quick: "Give direct, concise answers. Skip preamble. Just the answer and the minimum needed to support it.",
-  general: "You are a helpful, knowledgeable general-purpose assistant. Be clear and conversational."
+// ── Default modes ──────────────────────────────────────────────────
+const DEFAULT_MODES = [
+  { id: 'tutor',   name: 'tutor',   prompt: "You are a patient tutor. Explain concepts step by step, show your reasoning, and check understanding before moving on. For math, show full working." },
+  { id: 'quick',   name: 'quick',   prompt: "Give direct, concise answers. Skip preamble. Just the answer and the minimum needed to support it." },
+  { id: 'general', name: 'general', prompt: "You are a helpful, knowledgeable general-purpose assistant. Be clear and conversational." },
+];
+
+// ── State ──────────────────────────────────────────────────────────
+let state = {
+  threads:         JSON.parse(localStorage.getItem('wb_threads') || '[]'),
+  currentThreadId: null,
+  mode:            localStorage.getItem('wb_mode') || 'tutor',
+  temperature:     parseFloat(localStorage.getItem('wb_temp') || '0.7'),
+  model:           null,
+  attachments:     [],
+  connected:       false,
+  generating:      false,
+  modes:           JSON.parse(localStorage.getItem('wb_modes') || 'null') || DEFAULT_MODES,
+  ctxLimit:        4096,
+  think:           JSON.parse(localStorage.getItem('wb_think') || 'false'),
 };
 
-let state = {
-  threads: JSON.parse(localStorage.getItem('wb_threads') || '[]'),
-  currentThreadId: null,
-  mode: 'tutor',
-  temperature: 0.7,
-  model: null,
-  attachments: [],
-  connected: false
-};
+let abortController = null;
+
+// ── Persistence ────────────────────────────────────────────────────
+function saveThreads(){ localStorage.setItem('wb_threads', JSON.stringify(state.threads)); }
+function saveModes(){   localStorage.setItem('wb_modes',   JSON.stringify(state.modes)); }
+function savePrefs(){
+  localStorage.setItem('wb_mode', state.mode);
+  localStorage.setItem('wb_temp', state.temperature);
+  localStorage.setItem('wb_think', state.think);
+}
+
+function toggleThink(){
+  state.think = !state.think;
+  savePrefs();
+  applyThinkToggleUI();
+}
+
+function applyThinkToggleUI(){
+  const knob = document.getElementById('think-knob');
+  const btn  = document.getElementById('think-toggle');
+  if(!knob || !btn) return;
+  if(state.think){
+    knob.style.transform = 'translateX(18px)';
+    knob.style.background = 'var(--sage-bright)';
+    btn.style.background  = 'rgba(92,122,107,0.3)';
+    btn.style.borderColor = 'var(--sage)';
+  } else {
+    knob.style.transform = 'translateX(0)';
+    knob.style.background = 'var(--text-faint)';
+    btn.style.background  = 'var(--card)';
+    btn.style.borderColor = 'var(--border)';
+  }
+}
 
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 
-function saveThreads(){
-  localStorage.setItem('wb_threads', JSON.stringify(state.threads));
-}
-
 function getCurrentThread(){
   return state.threads.find(t => t.id === state.currentThreadId);
+}
+
+// ── Token estimation (≈ 4 chars / token) ──────────────────────────
+function estimateTokens(messages){
+  let chars = 0;
+  messages.forEach(m => { chars += (m.content || '').length; });
+  return Math.round(chars / 4);
+}
+
+function updateCtxBar(){
+  const thread = getCurrentThread();
+  const tokens = thread ? estimateTokens(thread.messages) : 0;
+  const limit = state.ctxLimit;
+  const pct = Math.min((tokens / limit) * 100, 100);
+  const bar = document.getElementById('ctx-bar');
+  const label = document.getElementById('ctx-tokens');
+  const limitLabel = limit >= 1000 ? (limit/1000).toFixed(0)+'k' : limit;
+  label.textContent = `${tokens.toLocaleString()} / ~${limitLabel} tok`;
+  bar.style.width = pct + '%';
+  bar.className = 'ctx-bar-fill' + (pct > 85 ? ' crit' : pct > 65 ? ' warn' : '');
+}
+
+// ── Model context hints ────────────────────────────────────────────
+function guessCtxLimit(modelName){
+  if(!modelName) return 4096;
+  const n = modelName.toLowerCase();
+  if(n.includes('128k'))  return 131072;
+  if(n.includes('32k'))   return 32768;
+  if(n.includes('16k'))   return 16384;
+  if(n.includes('8k'))    return 8192;
+  if(n.includes('llama3') || n.includes('llama-3')) return 8192;
+  if(n.includes('mistral')) return 8192;
+  if(n.includes('gemma'))   return 8192;
+  if(n.includes('qwen'))    return 32768;
+  if(n.includes('phi'))     return 4096;
+  return 4096;
+}
+
+// ── Markdown + KaTeX render ────────────────────────────────────────
+function renderBubble(el, text){
+  el.innerHTML = marked.parse(text);
+  el.querySelectorAll('pre code').forEach(b => hljs.highlightElement(b));
+  if(window.renderMathInElement){
+    renderMathInElement(el, {
+      delimiters:[
+        {left:'$$',right:'$$',display:true},
+        {left:'$',right:'$',display:false},
+        {left:'\\(',right:'\\)',display:false},
+        {left:'\\[',right:'\\]',display:true},
+      ],
+      throwOnError:false,
+    });
+  }
+}
+
+// ── Thread list ────────────────────────────────────────────────────
+function renderThreadList(){
+  const list = document.getElementById('thread-list');
+  list.innerHTML = '';
+  state.threads.forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'thread-item' + (t.id === state.currentThreadId ? ' active' : '');
+    div.dataset.id = t.id;
+
+    const titleSpan = document.createElement('span');
+    titleSpan.className = 'thread-title';
+    titleSpan.textContent = t.title;
+    titleSpan.ondblclick = (e) => { e.stopPropagation(); startRename(t.id, div, titleSpan); };
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'thread-del';
+    delBtn.textContent = '×';
+    delBtn.title = 'Delete thread';
+    delBtn.onclick = (e) => { e.stopPropagation(); deleteThread(t.id); };
+
+    div.appendChild(titleSpan);
+    div.appendChild(delBtn);
+    div.onclick = () => {
+      state.currentThreadId = t.id;
+      renderThreadList();
+      renderMessages();
+      updateCtxBar();
+    };
+    list.appendChild(div);
+  });
+}
+
+function startRename(id, row, titleSpan){
+  const thread = state.threads.find(t => t.id === id);
+  if(!thread) return;
+  const inp = document.createElement('input');
+  inp.className = 'thread-rename-input';
+  inp.value = thread.title;
+  row.replaceChild(inp, titleSpan);
+  inp.focus();
+  inp.select();
+  const finish = () => {
+    const val = inp.value.trim() || thread.title;
+    thread.title = val;
+    saveThreads();
+    renderThreadList();
+    if(id === state.currentThreadId) document.getElementById('header-title').textContent = val;
+  };
+  inp.onblur = finish;
+  inp.onkeydown = e => {
+    if(e.key === 'Enter'){ e.preventDefault(); inp.blur(); }
+    if(e.key === 'Escape'){ inp.value = thread.title; inp.blur(); }
+  };
+}
+
+function deleteThread(id){
+  state.threads = state.threads.filter(t => t.id !== id);
+  if(state.currentThreadId === id){
+    state.currentThreadId = state.threads.length ? state.threads[0].id : null;
+    if(!state.threads.length) newThread(); else { renderThreadList(); renderMessages(); updateCtxBar(); }
+  } else {
+    renderThreadList();
+  }
+  saveThreads();
 }
 
 function newThread(){
@@ -294,18 +654,36 @@ function newThread(){
   saveThreads();
   renderThreadList();
   renderMessages();
+  updateCtxBar();
+  focusInput();
 }
 
-function renderThreadList(){
-  const list = document.getElementById('thread-list');
-  list.innerHTML = '';
-  state.threads.forEach(t => {
-    const div = document.createElement('div');
-    div.className = 'thread-item' + (t.id === state.currentThreadId ? ' active' : '');
-    div.textContent = t.title;
-    div.onclick = () => { state.currentThreadId = t.id; renderThreadList(); renderMessages(); };
-    list.appendChild(div);
-  });
+// ── Think block helpers ────────────────────────────────────────────
+function makeThinkBlock(thinkText, open = false){
+  const block = document.createElement('div');
+  block.className = 'think-block' + (open ? ' open' : '');
+
+  const words = thinkText.trim().split(/\s+/).length;
+  const tokEst = Math.round(thinkText.length / 4);
+
+  block.innerHTML = `
+    <div class="think-header" onclick="this.parentElement.classList.toggle('open')">
+      <svg class="think-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="think-dot"></span>
+      <span class="think-label">reasoning</span>
+      <span class="think-tokens">~${tokEst} tok</span>
+    </div>
+    <div class="think-body"></div>`;
+
+  block.querySelector('.think-body').textContent = thinkText;
+  return block;
+}
+
+// ── Messages ───────────────────────────────────────────────────────
+function escapeHtml(s){
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
 }
 
 function renderMessages(){
@@ -317,7 +695,7 @@ function renderMessages(){
   if(!thread || thread.messages.length === 0){
     container.innerHTML = `<div class="empty-state">
       <div class="mark">workbench / offline instance</div>
-      <p>Nothing leaves this machine. Pick a model on the left, attach a file if you need to, and ask your first question.</p>
+      <p>Nothing leaves this machine. Pick a model, attach files if needed, and ask your first question.</p>
     </div>`;
     return;
   }
@@ -329,50 +707,40 @@ function renderMessages(){
     const bubble = document.createElement('div');
     bubble.className = 'bubble';
 
-    let html = '';
     if(m.files && m.files.length){
+      let chipHtml = '';
       m.files.forEach(f => {
-        html += `<div class="file-chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> ${escapeHtml(f.name)}</div>`;
+        chipHtml += `<div class="file-chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> ${escapeHtml(f.name)}</div>`;
       });
-      html += '<br>';
+      bubble.innerHTML = chipHtml + '<br>';
+      const contentDiv = document.createElement('div');
+      renderBubble(contentDiv, m.content || '');
+      bubble.appendChild(contentDiv);
+    } else {
+      // Render saved think block if present
+      if(m.thinking){
+        bubble.appendChild(makeThinkBlock(m.thinking, false));
+      }
+      // Strip any inline <think>…</think> from content before rendering
+      const cleanContent = (m.content || '').replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+      renderBubble(bubble, cleanContent);
     }
-    html += marked.parse(m.content || '');
-    bubble.innerHTML = html;
+
     row.appendChild(bubble);
     container.appendChild(row);
 
     if(m.role === 'assistant' && m.content){
       const actions = document.createElement('div');
       actions.className = 'msg-actions';
-      actions.style.marginLeft = '0';
       actions.innerHTML = `<button onclick="copyMsg(${idx})">copy</button><button onclick="regenerate(${idx})">regenerate</button>`;
       const wrap = document.createElement('div');
-      wrap.style.maxWidth = '720px';
-      wrap.style.margin = '0 auto';
-      wrap.style.padding = '0 24px 0 24px';
+      wrap.style.cssText = 'max-width:720px;margin:0 auto;padding:0 24px;';
       wrap.appendChild(actions);
       container.appendChild(wrap);
     }
   });
 
-  container.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
-  if(window.renderMathInElement){
-    renderMathInElement(container, {
-      delimiters: [
-        {left: '$$', right: '$$', display: true},
-        {left: '$', right: '$', display: false},
-        {left: '\\(', right: '\\)', display: false},
-        {left: '\\[', right: '\\]', display: true}
-      ]
-    });
-  }
   container.scrollTop = container.scrollHeight;
-}
-
-function escapeHtml(s){
-  const div = document.createElement('div');
-  div.textContent = s;
-  return div.innerHTML;
 }
 
 function copyMsg(idx){
@@ -385,73 +753,295 @@ async function regenerate(idx){
   thread.messages = thread.messages.slice(0, idx);
   saveThreads();
   renderMessages();
+  updateCtxBar();
   await sendToModel();
 }
 
-async function checkConnection(){
-  const linkEl = document.getElementById('status-link');
-  try{
-    const res = await fetch(OLLAMA_URL + '/api/tags');
-    const data = await res.json();
-    state.connected = true;
-    linkEl.textContent = 'local — connected';
-    linkEl.className = 'status-val';
+// ── Send / stream ──────────────────────────────────────────────────
+async function handleSend(){
+  const text = input.value.trim();
+  if(!text && state.attachments.length === 0) return;
+  if(!state.connected){ alert('Not connected to Ollama. Start it and reload.'); return; }
+  if(!state.currentThreadId) newThread();
 
-    const select = document.getElementById('model-select');
-    select.innerHTML = '';
-    if(data.models && data.models.length){
-      data.models.forEach(m => {
-        const opt = document.createElement('option');
-        opt.value = m.name;
-        opt.textContent = m.name;
-        select.appendChild(opt);
-      });
-      state.model = data.models[0].name;
-    } else {
-      select.innerHTML = '<option>no models found — run "ollama pull"</option>';
-    }
-  } catch(e){
-    state.connected = false;
-    linkEl.textContent = 'no connection';
-    linkEl.className = 'status-val err';
-    document.getElementById('model-select').innerHTML = '<option>start Ollama to load models</option>';
+  const thread = getCurrentThread();
+  let content = text;
+
+  thread.messages.push({
+    role: 'user',
+    content,
+    files: state.attachments.length ? [...state.attachments] : null
+  });
+
+  if(thread.messages.length === 1){
+    thread.title = text.slice(0, 40) || (state.attachments[0]?.name || 'new chat');
   }
+
+  const attachmentsForPrompt = state.attachments;
+  state.attachments = [];
+  renderAttachRow();
+  input.value = '';
+  input.style.height = 'auto';
+  saveThreads();
+  renderThreadList();
+  renderMessages();
+  updateCtxBar();
+
+  await sendToModel(attachmentsForPrompt);
 }
 
-document.getElementById('model-select').addEventListener('change', e => {
-  state.model = e.target.value;
-  document.getElementById('header-meta').textContent = state.model;
-});
+function setGenerating(v){
+  state.generating = v;
+  document.getElementById('send-btn').style.display = v ? 'none' : 'flex';
+  document.getElementById('stop-btn').style.display = v ? 'flex' : 'none';
+  document.getElementById('send-btn').disabled = v;
+}
 
-document.getElementById('mode-pills').addEventListener('click', e => {
-  if(e.target.classList.contains('pill')){
-    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-    e.target.classList.add('active');
-    state.mode = e.target.dataset.mode;
-  }
-});
-
-document.getElementById('temp-slider').addEventListener('input', e => {
-  state.temperature = parseFloat(e.target.value);
-  document.getElementById('temp-val').textContent = state.temperature.toFixed(1);
-});
-
-document.getElementById('new-thread-btn').addEventListener('click', newThread);
-
-document.getElementById('export-btn').addEventListener('click', () => {
+async function sendToModel(attachments){
   const thread = getCurrentThread();
-  if(!thread) return;
-  let md = `# ${thread.title}\n\n`;
-  thread.messages.forEach(m => {
-    md += `**${m.role}:**\n\n${m.content}\n\n---\n\n`;
-  });
-  const blob = new Blob([md], {type: 'text/markdown'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = thread.title.replace(/\s+/g,'_') + '.md';
-  a.click();
-});
+  const container = document.getElementById('messages');
 
+  setGenerating(true);
+  abortController = new AbortController();
+
+  const typingRow = document.createElement('div');
+  typingRow.className = 'msg-row assistant';
+  typingRow.innerHTML = `<div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  container.appendChild(typingRow);
+  container.scrollTop = container.scrollHeight;
+
+  const currentMode = state.modes.find(m => m.id === state.mode) || state.modes[0];
+  let systemPrompt = currentMode ? currentMode.prompt : '';
+  let userContent = thread.messages[thread.messages.length - 1].content;
+
+  if(attachments && attachments.length){
+    let fileBlock = attachments.map(f => `--- file: ${f.name} ---\n${f.content}`).join('\n\n');
+    userContent = `${userContent}\n\n${fileBlock}`;
+  }
+
+  const apiMessages = [{ role:'system', content:systemPrompt }];
+  thread.messages.slice(0, -1).forEach(m => apiMessages.push({ role:m.role, content:m.content }));
+  apiMessages.push({ role:'user', content:userContent });
+
+  const startTime = Date.now();
+  let assistantText    = '';
+  let assistantThinking = '';
+  let stopped = false;
+
+  try{
+    const res = await fetch(OLLAMA_URL + '/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      signal: abortController.signal,
+      body: JSON.stringify({
+        model: state.model,
+        messages: apiMessages,
+        stream: true,
+        think: state.think,
+        options: { temperature: state.temperature }
+      })
+    });
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    typingRow.remove();
+
+    const row = document.createElement('div');
+    row.className = 'msg-row assistant';
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    row.appendChild(bubble);
+    container.appendChild(row);
+
+    let tokenCount = 0;
+    let buffer = '';
+    let assistantThinking = '';  // accumulated thinking text
+    let thinkBlockEl = null;     // live think block DOM node
+    let thinkBodyEl  = null;
+    let thinkDotEl   = null;
+    let contentEl    = null;     // div for the answer portion
+
+    // For inline <think> tag models (DeepSeek-R1 etc.)
+    let inlineThinkBuffer = '';
+    let inlineInThink = false;
+
+    function ensureThinkBlock(){
+      if(thinkBlockEl) return;
+      thinkBlockEl = document.createElement('div');
+      thinkBlockEl.className = 'think-block open';
+      thinkBlockEl.innerHTML = `
+        <div class="think-header" onclick="this.parentElement.classList.toggle('open')">
+          <svg class="think-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          <span class="think-dot pulsing"></span>
+          <span class="think-label">reasoning…</span>
+          <span class="think-tokens"></span>
+        </div>
+        <div class="think-body"></div>`;
+      bubble.appendChild(thinkBlockEl);
+      thinkBodyEl = thinkBlockEl.querySelector('.think-body');
+      thinkDotEl  = thinkBlockEl.querySelector('.think-dot');
+    }
+
+    function ensureContentEl(){
+      if(contentEl) return;
+      contentEl = document.createElement('div');
+      bubble.appendChild(contentEl);
+    }
+
+    function finaliseThinkBlock(){
+      if(!thinkBlockEl) return;
+      thinkDotEl.classList.remove('pulsing');
+      const tokEst = Math.round(assistantThinking.length / 4);
+      thinkBlockEl.querySelector('.think-label').textContent = 'reasoning';
+      thinkBlockEl.querySelector('.think-tokens').textContent = `~${tokEst} tok`;
+      thinkBlockEl.classList.remove('open'); // collapse on completion
+    }
+
+    while(true){
+      const { done, value } = await reader.read();
+      if(done) break;
+      buffer += decoder.decode(value, {stream:true});
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+
+      for(const line of lines){
+        if(!line.trim()) continue;
+        try{
+          const json = JSON.parse(line);
+          const msg = json.message;
+          if(!msg) continue;
+
+          // ── Path A: native thinking field (Qwen3, phi4-reasoning via think:true) ──
+          if(msg.thinking){
+            ensureThinkBlock();
+            assistantThinking += msg.thinking;
+            thinkBodyEl.textContent = assistantThinking;
+            container.scrollTop = container.scrollHeight;
+          }
+
+          if(msg.content){
+            // If we had a native think block and now getting content, finalise it
+            if(thinkBlockEl && !contentEl) finaliseThinkBlock();
+
+            // ── Path B: inline <think> tags (DeepSeek-R1, some Qwen3 fallbacks) ──
+            inlineThinkBuffer += msg.content;
+
+            // Parse out any <think>...</think> spans from the running buffer
+            let workBuf = inlineThinkBuffer;
+            let parsed  = '';
+            let didExtractThink = false;
+
+            // Process complete <think> blocks
+            let startIdx;
+            while((startIdx = workBuf.indexOf('<think>')) !== -1){
+              parsed += workBuf.slice(0, startIdx);
+              workBuf  = workBuf.slice(startIdx + 7);
+              const endIdx = workBuf.indexOf('</think>');
+              if(endIdx !== -1){
+                const thinkContent = workBuf.slice(0, endIdx);
+                assistantThinking += thinkContent;
+                ensureThinkBlock();
+                thinkBodyEl.textContent = assistantThinking;
+                didExtractThink = true;
+                workBuf = workBuf.slice(endIdx + 8);
+              } else {
+                // Incomplete <think> tag — mid-stream, treat rest as thinking
+                inlineInThink = true;
+                assistantThinking += workBuf;
+                ensureThinkBlock();
+                thinkBodyEl.textContent = assistantThinking;
+                workBuf = '';
+                break;
+              }
+            }
+
+            if(inlineInThink){
+              // Still inside a <think> block across chunks
+              const endIdx = workBuf.indexOf('</think>');
+              if(endIdx !== -1){
+                assistantThinking += workBuf.slice(0, endIdx);
+                thinkBodyEl.textContent = assistantThinking;
+                inlineInThink = false;
+                didExtractThink = true;
+                workBuf = workBuf.slice(endIdx + 8);
+                finaliseThinkBlock();
+              } else {
+                assistantThinking += workBuf;
+                thinkBodyEl.textContent = assistantThinking;
+                workBuf = '';
+              }
+              inlineThinkBuffer = workBuf;
+            } else {
+              inlineThinkBuffer = workBuf;
+              parsed += workBuf;
+            }
+
+            if(didExtractThink && thinkBlockEl && !contentEl) finaliseThinkBlock();
+
+            // Whatever is left is the actual answer
+            if(parsed || (!inlineInThink && workBuf)){
+              const answerText = inlineInThink ? '' : parsed;
+              if(answerText){
+                assistantText += msg.content.replace(/<think>[\s\S]*?<\/think>/g, '');
+                ensureContentEl();
+                renderBubble(contentEl, assistantText);
+              } else if(!inlineInThink && msg.thinking == null){
+                // Pure content with no think tags at all
+                assistantText += msg.content;
+                ensureContentEl();
+                renderBubble(contentEl, assistantText);
+              }
+            }
+
+            tokenCount++;
+            container.scrollTop = container.scrollHeight;
+          }
+        } catch(e){}
+      }
+    }
+
+    // Final cleanup: if think block never closed
+    if(thinkBlockEl) finaliseThinkBlock();
+    // If entire response came through as plain content (no thinking)
+    if(!contentEl && assistantText){
+      ensureContentEl();
+      renderBubble(contentEl, assistantText);
+    }
+
+    const elapsed = (Date.now() - startTime) / 1000;
+    const speed = elapsed > 0 ? (tokenCount / elapsed).toFixed(1) : '0';
+    document.getElementById('status-speed').textContent = speed + ' tok/s';
+
+  } catch(e){
+    typingRow.remove();
+    if(e.name === 'AbortError'){
+      stopped = true;
+      // Partial response is fine — just close it off
+    } else {
+      const banner = document.createElement('div');
+      banner.className = 'error-banner';
+      banner.textContent = 'Connection lost — make sure Ollama is running, then try again.';
+      container.appendChild(banner);
+      checkConnection();
+    }
+  }
+
+  if(assistantText || assistantThinking){
+    thread.messages.push({ role:'assistant', content:assistantText, thinking: assistantThinking || null });
+    saveThreads();
+    renderMessages();
+    updateCtxBar();
+  }
+
+  setGenerating(false);
+  abortController = null;
+}
+
+function stopGeneration(){
+  if(abortController){ abortController.abort(); }
+}
+
+// ── Attach files ───────────────────────────────────────────────────
 document.getElementById('file-btn').addEventListener('click', () => {
   document.getElementById('file-input').click();
 });
@@ -469,8 +1059,13 @@ document.getElementById('file-input').addEventListener('change', async e => {
 function readFileAsText(file){
   return new Promise((resolve) => {
     const reader = new FileReader();
-    reader.onload = () => resolve(reader.result.slice(0, 12000));
+    reader.onload = () => {
+      const result = reader.result;
+      // Trim large files but keep a generous limit
+      resolve(typeof result === 'string' ? result.slice(0, 40000) : '');
+    };
     reader.onerror = () => resolve('');
+    // Always read as text — works for any text-based format
     reader.readAsText(file);
   });
 }
@@ -491,150 +1086,245 @@ function removeAttachment(i){
   renderAttachRow();
 }
 
+// ── Input ──────────────────────────────────────────────────────────
 const input = document.getElementById('msg-input');
 input.addEventListener('input', () => {
   input.style.height = 'auto';
   input.style.height = Math.min(input.scrollHeight, 160) + 'px';
 });
 input.addEventListener('keydown', e => {
-  if(e.key === 'Enter' && !e.shiftKey){
-    e.preventDefault();
-    handleSend();
-  }
+  if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); handleSend(); }
 });
 document.getElementById('send-btn').addEventListener('click', handleSend);
+document.getElementById('stop-btn').addEventListener('click', stopGeneration);
 
-async function handleSend(){
-  const text = input.value.trim();
-  if(!text && state.attachments.length === 0) return;
-  if(!state.connected){
-    alert('Not connected to Ollama. Start it and reload.');
+function focusInput(){ input.focus(); }
+
+// ── Keyboard shortcuts ─────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  // / → focus input (when not already in an input)
+  if(e.key === '/' && document.activeElement !== input
+    && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){
+    e.preventDefault();
+    focusInput();
     return;
   }
-  if(!state.currentThreadId) newThread();
 
-  const thread = getCurrentThread();
-  let content = text;
-
-  thread.messages.push({
-    role: 'user',
-    content: content,
-    files: state.attachments.length ? [...state.attachments] : null
-  });
-
-  if(thread.messages.length === 1){
-    thread.title = text.slice(0, 40) || (state.attachments[0]?.name || 'new chat');
+  // Escape → stop generation OR close kb hint
+  if(e.key === 'Escape'){
+    if(state.generating){ stopGeneration(); return; }
+    const hint = document.getElementById('kb-hint');
+    if(hint.classList.contains('show')){ hint.classList.remove('show'); return; }
   }
 
-  const attachmentsForPrompt = state.attachments;
-  state.attachments = [];
-  renderAttachRow();
-  input.value = '';
-  input.style.height = 'auto';
-  saveThreads();
-  renderThreadList();
-  renderMessages();
+  if(!e.ctrlKey && !e.metaKey) return;
 
-  await sendToModel(attachmentsForPrompt);
-}
-
-async function sendToModel(attachments){
-  const thread = getCurrentThread();
-  const container = document.getElementById('messages');
-
-  const typingRow = document.createElement('div');
-  typingRow.className = 'msg-row assistant';
-  typingRow.innerHTML = `<div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
-  container.appendChild(typingRow);
-  container.scrollTop = container.scrollHeight;
-
-  let systemPrompt = MODE_PROMPTS[state.mode];
-  let userContent = thread.messages[thread.messages.length - 1].content;
-
-  if(attachments && attachments.length){
-    let fileBlock = attachments.map(f => `--- file: ${f.name} ---\n${f.content}`).join('\n\n');
-    userContent = `${userContent}\n\n${fileBlock}`;
+  // Ctrl+N → new chat
+  if(e.key === 'n' || e.key === 'N'){
+    e.preventDefault();
+    newThread();
+    return;
   }
-
-  const apiMessages = [{ role: 'system', content: systemPrompt }];
-  thread.messages.slice(0, -1).forEach(m => apiMessages.push({ role: m.role, content: m.content }));
-  apiMessages.push({ role: 'user', content: userContent });
-
-  const startTime = Date.now();
-  let assistantText = '';
-
-  try{
-    const res = await fetch(OLLAMA_URL + '/api/chat', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        model: state.model,
-        messages: apiMessages,
-        stream: true,
-        options: { temperature: state.temperature }
-      })
-    });
-
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    typingRow.remove();
-
-    const row = document.createElement('div');
-    row.className = 'msg-row assistant';
-    const bubble = document.createElement('div');
-    bubble.className = 'bubble';
-    row.appendChild(bubble);
-    container.appendChild(row);
-
-    let tokenCount = 0;
-    let buffer = '';
-    while(true){
-      const { done, value } = await reader.read();
-      if(done) break;
-      buffer += decoder.decode(value, {stream: true});
-      const lines = buffer.split('\n');
-      buffer = lines.pop();
-      for(const line of lines){
-        if(!line.trim()) continue;
-        try{
-          const json = JSON.parse(line);
-          if(json.message && json.message.content){
-            assistantText += json.message.content;
-            tokenCount++;
-            bubble.innerHTML = marked.parse(assistantText);
-            container.scrollTop = container.scrollHeight;
-          }
-        } catch(e){}
-      }
+  // Ctrl+E → export
+  if(e.key === 'e' || e.key === 'E'){
+    e.preventDefault();
+    doExport();
+    return;
+  }
+  // Ctrl+ArrowUp/Down → switch thread
+  if(e.key === 'ArrowUp' || e.key === 'ArrowDown'){
+    e.preventDefault();
+    const idx = state.threads.findIndex(t => t.id === state.currentThreadId);
+    const next = e.key === 'ArrowUp' ? idx - 1 : idx + 1;
+    if(next >= 0 && next < state.threads.length){
+      state.currentThreadId = state.threads[next].id;
+      renderThreadList();
+      renderMessages();
+      updateCtxBar();
     }
+    return;
+  }
+});
 
-    const elapsed = (Date.now() - startTime) / 1000;
-    const speed = elapsed > 0 ? (tokenCount / elapsed).toFixed(1) : '0';
-    document.getElementById('status-speed').textContent = speed + ' tok/s';
+// ── KB hint toggle ─────────────────────────────────────────────────
+function toggleKbHint(){
+  document.getElementById('kb-hint').classList.toggle('show');
+}
 
-    thread.messages.push({ role: 'assistant', content: assistantText });
-    saveThreads();
-    renderMessages();
+// ── Sidebar tabs ───────────────────────────────────────────────────
+document.querySelectorAll('.sidebar-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.sidebar-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    if(tab.dataset.tab === 'settings') renderModeSettings();
+  });
+});
 
+// ── Mode pills (dynamic) ───────────────────────────────────────────
+function renderModePills(){
+  const container = document.getElementById('mode-pills');
+  container.innerHTML = '';
+  state.modes.forEach(m => {
+    const btn = document.createElement('button');
+    btn.className = 'pill' + (m.id === state.mode ? ' active' : '');
+    btn.textContent = m.name;
+    btn.dataset.mode = m.id;
+    btn.onclick = () => {
+      state.mode = m.id;
+      savePrefs();
+      renderModePills();
+    };
+    container.appendChild(btn);
+  });
+}
+
+// ── Settings: mode editor ──────────────────────────────────────────
+function renderModeSettings(){
+  const list = document.getElementById('mode-settings-list');
+  list.innerHTML = '';
+  state.modes.forEach((m, i) => {
+    const card = document.createElement('div');
+    card.className = 'mode-setting';
+
+    const header = document.createElement('div');
+    header.className = 'mode-setting-header';
+
+    const nameInp = document.createElement('input');
+    nameInp.className = 'mode-name-input';
+    nameInp.value = m.name;
+    nameInp.spellcheck = false;
+    nameInp.oninput = () => {
+      m.name = nameInp.value.toLowerCase().trim() || m.name;
+      saveModes();
+      renderModePills();
+    };
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'mode-del-btn';
+    delBtn.textContent = '×';
+    delBtn.title = 'Remove mode';
+    delBtn.onclick = () => {
+      if(state.modes.length <= 1){ return; }
+      state.modes.splice(i, 1);
+      if(state.mode === m.id) state.mode = state.modes[0].id;
+      saveModes(); savePrefs();
+      renderModeSettings();
+      renderModePills();
+    };
+
+    header.appendChild(nameInp);
+    header.appendChild(delBtn);
+
+    const promptArea = document.createElement('textarea');
+    promptArea.className = 'mode-prompt-textarea';
+    promptArea.value = m.prompt;
+    promptArea.placeholder = 'System prompt for this mode…';
+    promptArea.oninput = () => {
+      m.prompt = promptArea.value;
+      saveModes();
+    };
+
+    card.appendChild(header);
+    card.appendChild(promptArea);
+    list.appendChild(card);
+  });
+}
+
+document.getElementById('add-mode-btn').addEventListener('click', () => {
+  const newMode = { id: uid(), name: 'custom', prompt: 'You are a helpful assistant.' };
+  state.modes.push(newMode);
+  saveModes();
+  renderModeSettings();
+  renderModePills();
+});
+
+// ── Export ─────────────────────────────────────────────────────────
+function doExport(){
+  const thread = getCurrentThread();
+  if(!thread) return;
+  let md = `# ${thread.title}\n\n`;
+  thread.messages.forEach(m => {
+    md += `**${m.role}:**\n\n${m.content}\n\n---\n\n`;
+  });
+  const blob = new Blob([md], {type:'text/markdown'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = thread.title.replace(/\s+/g,'_') + '.md';
+  a.click();
+}
+
+document.getElementById('new-thread-btn').addEventListener('click', newThread);
+document.getElementById('export-btn').addEventListener('click', doExport);
+
+document.getElementById('temp-slider').addEventListener('input', e => {
+  state.temperature = parseFloat(e.target.value);
+  document.getElementById('temp-val').textContent = state.temperature.toFixed(1);
+  savePrefs();
+});
+document.getElementById('temp-slider').value = state.temperature;
+document.getElementById('temp-val').textContent = state.temperature.toFixed(1);
+
+// ── Connection ─────────────────────────────────────────────────────
+document.getElementById('model-select').addEventListener('change', e => {
+  state.model = e.target.value;
+  state.ctxLimit = guessCtxLimit(state.model);
+  document.getElementById('header-meta').textContent = state.model;
+  updateCtxBar();
+});
+
+async function checkConnection(){
+  const linkEl = document.getElementById('status-link');
+  try{
+    const res = await fetch(OLLAMA_URL + '/api/tags');
+    const data = await res.json();
+    state.connected = true;
+    linkEl.textContent = 'local — connected';
+    linkEl.className = 'status-val';
+
+    const select = document.getElementById('model-select');
+    const prev = state.model;
+    select.innerHTML = '';
+    if(data.models && data.models.length){
+      data.models.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.name;
+        opt.textContent = m.name;
+        if(m.name === prev) opt.selected = true;
+        select.appendChild(opt);
+      });
+      state.model = prev && data.models.find(m=>m.name===prev) ? prev : data.models[0].name;
+      state.ctxLimit = guessCtxLimit(state.model);
+    } else {
+      select.innerHTML = '<option>no models found — run "ollama pull"</option>';
+    }
+    document.getElementById('header-meta').textContent = state.model || '';
+    updateCtxBar();
   } catch(e){
-    typingRow.remove();
-    const banner = document.createElement('div');
-    banner.className = 'error-banner';
-    banner.textContent = 'Connection lost — make sure Ollama is running, then try again.';
-    container.appendChild(banner);
-    checkConnection();
+    state.connected = false;
+    linkEl.textContent = 'no connection';
+    linkEl.className = 'status-val err';
+    document.getElementById('model-select').innerHTML = '<option>start Ollama to load models</option>';
   }
 }
 
-checkConnection();
-setInterval(checkConnection, 8000);
+// ── Init ───────────────────────────────────────────────────────────
+renderModePills();
+renderModeSettings();
+applyThinkToggleUI();
+
 if(state.threads.length === 0){
   newThread();
 } else {
   state.currentThreadId = state.threads[0].id;
+  renderThreadList();
+  renderMessages();
+  updateCtxBar();
 }
-renderThreadList();
-renderMessages();
+
+checkConnection();
+setInterval(checkConnection, 8000);
 </script>
 </body>
 </html>

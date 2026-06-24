@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workbench — Local AI</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+  :root{
+    --bg: #0F1411;
+    --panel: #161D19;
+    --card: #1B231E;
+    --border: #2A332D;
+    --text: #E8E6DE;
+    --text-dim: #7A8B82;
+    --text-faint: #4D5750;
+    --sage: #5C7A6B;
+    --sage-bright: #8AAE9A;
+    --amber: #C4794A;
+    --danger: #B05C52;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);
+    font-family:'IBM Plex Sans',-apple-system,Segoe UI,sans-serif;}
+  body{display:flex;height:100vh;overflow:hidden;}
+
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+
+  /* ===== LEFT PANEL ===== */
+  #sidebar{
+    width:280px;flex-shrink:0;background:var(--panel);
+    border-right:1px solid var(--border);
+    display:flex;flex-direction:column;
+    padding:18px 16px;
+  }
+  .brand{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;letter-spacing:0.12em;color:var(--text-dim);
+    text-transform:uppercase;margin-bottom:18px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .brand .dot{width:6px;height:6px;border-radius:50%;background:var(--sage-bright);
+    box-shadow:0 0 0 0 rgba(138,174,154,0.6);
+    animation:pulse 2.2s infinite;}
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(138,174,154,0.5);}
+    70%{box-shadow:0 0 0 6px rgba(138,174,154,0);}
+    100%{box-shadow:0 0 0 0 rgba(138,174,154,0);}
+  }
+
+  .status-card{
+    background:var(--card);border:1px solid var(--border);border-radius:6px;
+    padding:12px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:11px;
+  }
+  .status-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+  .status-row:last-child{margin-bottom:0;}
+  .status-label{color:var(--text-faint);text-transform:uppercase;letter-spacing:0.06em;font-size:10px;}
+  .status-val{color:var(--sage-bright);}
+  .status-val.offline{color:var(--amber);}
+  .status-val.err{color:var(--danger);}
+
+  .field-label{
+    font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-faint);
+    text-transform:uppercase;letter-spacing:0.08em;margin:14px 0 6px;
+  }
+  select, input[type=text], textarea{
+    width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);
+    border-radius:5px;padding:8px 9px;font-size:13px;font-family:inherit;
+  }
+  select:focus, input:focus, textarea:focus{outline:none;border-color:var(--sage);}
+
+  .slider-row{display:flex;align-items:center;gap:8px;margin-top:4px;}
+  input[type=range]{flex:1;accent-color:var(--sage-bright);height:3px;}
+  .slider-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);min-width:28px;text-align:right;}
+
+  .mode-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+  .pill{
+    font-size:11px;padding:5px 10px;border-radius:14px;border:1px solid var(--border);
+    color:var(--text-dim);cursor:pointer;background:transparent;font-family:inherit;
+  }
+  .pill.active{background:var(--sage);border-color:var(--sage);color:#0F1411;}
+  .pill:hover:not(.active){border-color:var(--sage);}
+
+  #thread-list{flex:1;overflow-y:auto;margin-top:14px;display:flex;flex-direction:column;gap:4px;}
+  .thread-item{
+    padding:8px 10px;border-radius:5px;font-size:12.5px;color:var(--text-dim);cursor:pointer;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1px solid transparent;
+  }
+  .thread-item:hover{background:var(--card);}
+  .thread-item.active{background:var(--card);border-color:var(--border);color:var(--text);}
+
+  .sidebar-bottom{display:flex;gap:8px;margin-top:10px;}
+  button.ghost{
+    flex:1;background:transparent;border:1px solid var(--border);color:var(--text-dim);
+    border-radius:5px;padding:8px;font-size:12px;cursor:pointer;font-family:inherit;
+  }
+  button.ghost:hover{border-color:var(--sage);color:var(--text);}
+
+  /* ===== MAIN ===== */
+  #main{flex:1;display:flex;flex-direction:column;min-width:0;}
+  #chat-header{
+    padding:14px 24px;border-bottom:1px solid var(--border);
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  #chat-header .title{font-size:14px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;}
+  #chat-header .meta{font-size:11px;color:var(--text-faint);font-family:'JetBrains Mono',monospace;}
+
+  #messages{flex:1;overflow-y:auto;padding:24px 0;}
+  .msg-row{max-width:720px;margin:0 auto;padding:10px 24px;display:flex;gap:14px;}
+  .msg-row.user{flex-direction:row-reverse;}
+  .bubble{
+    max-width:78%;padding:12px 16px;border-radius:8px;font-size:14.5px;line-height:1.6;
+  }
+  .msg-row.user .bubble{background:var(--sage);color:#0F1411;}
+  .msg-row.assistant .bubble{background:var(--card);border:1px solid var(--border);color:var(--text);}
+  .bubble pre{background:#0B0F0D;border:1px solid var(--border);border-radius:6px;padding:10px;overflow-x:auto;font-size:13px;}
+  .bubble code{font-family:'JetBrains Mono',monospace;}
+  .bubble p{margin:0 0 8px;}
+  .bubble p:last-child{margin-bottom:0;}
+  .bubble .file-chip{
+    display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,0.18);
+    border-radius:5px;padding:4px 9px;font-size:11.5px;margin-bottom:6px;font-family:'JetBrains Mono',monospace;
+  }
+
+  .msg-actions{display:flex;gap:10px;margin-top:6px;}
+  .msg-actions button{
+    background:none;border:none;color:var(--text-faint);font-size:11px;cursor:pointer;
+    font-family:'JetBrains Mono',monospace;padding:0;
+  }
+  .msg-actions button:hover{color:var(--sage-bright);}
+
+  .typing{display:flex;gap:4px;padding:6px 0;}
+  .typing span{width:5px;height:5px;border-radius:50%;background:var(--text-faint);animation:bounce 1.2s infinite;}
+  .typing span:nth-child(2){animation-delay:0.15s;}
+  .typing span:nth-child(3){animation-delay:0.3s;}
+  @keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:0.4;}30%{transform:translateY(-3px);opacity:1;}}
+
+  #composer{
+    border-top:1px solid var(--border);padding:16px 24px 18px;
+  }
+  #composer-inner{max-width:720px;margin:0 auto;}
+  #attach-row{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
+  .attach-chip{
+    display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);
+    border-radius:5px;padding:5px 9px;font-size:11.5px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;
+  }
+  .attach-chip button{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:13px;padding:0;}
+
+  #input-bar{display:flex;align-items:flex-end;gap:10px;background:var(--card);
+    border:1px solid var(--border);border-radius:10px;padding:8px 8px 8px 14px;}
+  #input-bar:focus-within{border-color:var(--sage);}
+  #msg-input{
+    flex:1;background:none;border:none;color:var(--text);resize:none;font-size:14.5px;
+    font-family:inherit;max-height:160px;padding:8px 0;line-height:1.5;
+  }
+  #msg-input:focus{outline:none;}
+  .icon-btn{
+    background:none;border:1px solid var(--border);color:var(--text-dim);border-radius:7px;
+    width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;
+    flex-shrink:0;
+  }
+  .icon-btn:hover{border-color:var(--sage);color:var(--sage-bright);}
+  #send-btn{background:var(--sage);border:none;color:#0F1411;}
+  #send-btn:hover{background:var(--sage-bright);}
+  #send-btn:disabled{opacity:0.4;cursor:default;}
+
+  #hint{font-size:11px;color:var(--text-faint);text-align:center;margin-top:8px;font-family:'JetBrains Mono',monospace;}
+
+  .empty-state{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:var(--text-faint);text-align:center;padding:40px;
+  }
+  .empty-state .mark{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.1em;
+    color:var(--sage);text-transform:uppercase;margin-bottom:10px;}
+  .empty-state p{max-width:340px;font-size:13.5px;line-height:1.6;color:var(--text-dim);}
+
+  .error-banner{
+    background:rgba(176,92,82,0.12);border:1px solid rgba(176,92,82,0.4);color:#D49389;
+    border-radius:6px;padding:10px 14px;font-size:12.5px;max-width:720px;margin:0 auto 10px;
+    font-family:'JetBrains Mono',monospace;
+  }
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div class="brand"><span class="dot"></span>workbench</div>
+
+  <div class="status-card" id="status-card">
+    <div class="status-row">
+      <span class="status-label">link</span>
+      <span class="status-val offline" id="status-link">checking…</span>
+    </div>
+    <div class="status-row">
+      <span class="status-label">network</span>
+      <span class="status-val" id="status-net">no outbound calls</span>
+    </div>
+    <div class="status-row">
+      <span class="status-label">speed</span>
+      <span class="status-val" id="status-speed">—</span>
+    </div>
+  </div>
+
+  <div class="field-label">model</div>
+  <select id="model-select"><option>connect to load models</option></select>
+
+  <div class="field-label">mode</div>
+  <div class="mode-pills" id="mode-pills">
+    <button class="pill active" data-mode="tutor">tutor</button>
+    <button class="pill" data-mode="quick">quick</button>
+    <button class="pill" data-mode="general">general</button>
+  </div>
+
+  <div class="field-label">creativity</div>
+  <div class="slider-row">
+    <input type="range" id="temp-slider" min="0" max="1" step="0.1" value="0.7">
+    <span class="slider-val" id="temp-val">0.7</span>
+  </div>
+
+  <div id="thread-list"></div>
+
+  <div class="sidebar-bottom">
+    <button class="ghost" id="new-thread-btn">+ new chat</button>
+    <button class="ghost" id="export-btn">export</button>
+  </div>
+</div>
+
+<div id="main">
+  <div id="chat-header">
+    <span class="title" id="header-title">new chat</span>
+    <span class="meta" id="header-meta"></span>
+  </div>
+
+  <div id="messages"></div>
+
+  <div id="composer">
+    <div id="composer-inner">
+      <div id="attach-row"></div>
+      <div id="input-bar">
+        <button class="icon-btn" id="file-btn" title="Attach file" aria-label="Attach file">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+        </button>
+        <input type="file" id="file-input" multiple style="display:none">
+        <textarea id="msg-input" rows="1" placeholder="Ask anything — math, chemistry, general questions…"></textarea>
+        <button class="icon-btn" id="send-btn" title="Send" aria-label="Send message">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div id="hint">everything here stays on this machine — nothing is sent over the network except to localhost</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const OLLAMA_URL = 'http://localhost:11434';
+
+const MODE_PROMPTS = {
+  tutor: "You are a patient tutor. Explain concepts step by step, show your reasoning, and check understanding before moving on. For math, show full working.",
+  quick: "Give direct, concise answers. Skip preamble. Just the answer and the minimum needed to support it.",
+  general: "You are a helpful, knowledgeable general-purpose assistant. Be clear and conversational."
+};
+
+let state = {
+  threads: JSON.parse(localStorage.getItem('wb_threads') || '[]'),
+  currentThreadId: null,
+  mode: 'tutor',
+  temperature: 0.7,
+  model: null,
+  attachments: [],
+  connected: false
+};
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+function saveThreads(){
+  localStorage.setItem('wb_threads', JSON.stringify(state.threads));
+}
+
+function getCurrentThread(){
+  return state.threads.find(t => t.id === state.currentThreadId);
+}
+
+function newThread(){
+  const t = { id: uid(), title: 'new chat', messages: [], createdAt: Date.now() };
+  state.threads.unshift(t);
+  state.currentThreadId = t.id;
+  saveThreads();
+  renderThreadList();
+  renderMessages();
+}
+
+function renderThreadList(){
+  const list = document.getElementById('thread-list');
+  list.innerHTML = '';
+  state.threads.forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'thread-item' + (t.id === state.currentThreadId ? ' active' : '');
+    div.textContent = t.title;
+    div.onclick = () => { state.currentThreadId = t.id; renderThreadList(); renderMessages(); };
+    list.appendChild(div);
+  });
+}
+
+function renderMessages(){
+  const container = document.getElementById('messages');
+  const thread = getCurrentThread();
+  document.getElementById('header-title').textContent = thread ? thread.title : 'no chat selected';
+  document.getElementById('header-meta').textContent = state.model || '';
+
+  if(!thread || thread.messages.length === 0){
+    container.innerHTML = `<div class="empty-state">
+      <div class="mark">workbench / offline instance</div>
+      <p>Nothing leaves this machine. Pick a model on the left, attach a file if you need to, and ask your first question.</p>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = '';
+  thread.messages.forEach((m, idx) => {
+    const row = document.createElement('div');
+    row.className = 'msg-row ' + m.role;
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+
+    let html = '';
+    if(m.files && m.files.length){
+      m.files.forEach(f => {
+        html += `<div class="file-chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> ${escapeHtml(f.name)}</div>`;
+      });
+      html += '<br>';
+    }
+    html += marked.parse(m.content || '');
+    bubble.innerHTML = html;
+    row.appendChild(bubble);
+    container.appendChild(row);
+
+    if(m.role === 'assistant' && m.content){
+      const actions = document.createElement('div');
+      actions.className = 'msg-actions';
+      actions.style.marginLeft = '0';
+      actions.innerHTML = `<button onclick="copyMsg(${idx})">copy</button><button onclick="regenerate(${idx})">regenerate</button>`;
+      const wrap = document.createElement('div');
+      wrap.style.maxWidth = '720px';
+      wrap.style.margin = '0 auto';
+      wrap.style.padding = '0 24px 0 24px';
+      wrap.appendChild(actions);
+      container.appendChild(wrap);
+    }
+  });
+
+  container.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+  if(window.renderMathInElement){
+    renderMathInElement(container, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false},
+        {left: '\\(', right: '\\)', display: false},
+        {left: '\\[', right: '\\]', display: true}
+      ]
+    });
+  }
+  container.scrollTop = container.scrollHeight;
+}
+
+function escapeHtml(s){
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+function copyMsg(idx){
+  const thread = getCurrentThread();
+  navigator.clipboard.writeText(thread.messages[idx].content);
+}
+
+async function regenerate(idx){
+  const thread = getCurrentThread();
+  thread.messages = thread.messages.slice(0, idx);
+  saveThreads();
+  renderMessages();
+  await sendToModel();
+}
+
+async function checkConnection(){
+  const linkEl = document.getElementById('status-link');
+  try{
+    const res = await fetch(OLLAMA_URL + '/api/tags');
+    const data = await res.json();
+    state.connected = true;
+    linkEl.textContent = 'local — connected';
+    linkEl.className = 'status-val';
+
+    const select = document.getElementById('model-select');
+    select.innerHTML = '';
+    if(data.models && data.models.length){
+      data.models.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.name;
+        opt.textContent = m.name;
+        select.appendChild(opt);
+      });
+      state.model = data.models[0].name;
+    } else {
+      select.innerHTML = '<option>no models found — run "ollama pull"</option>';
+    }
+  } catch(e){
+    state.connected = false;
+    linkEl.textContent = 'no connection';
+    linkEl.className = 'status-val err';
+    document.getElementById('model-select').innerHTML = '<option>start Ollama to load models</option>';
+  }
+}
+
+document.getElementById('model-select').addEventListener('change', e => {
+  state.model = e.target.value;
+  document.getElementById('header-meta').textContent = state.model;
+});
+
+document.getElementById('mode-pills').addEventListener('click', e => {
+  if(e.target.classList.contains('pill')){
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    e.target.classList.add('active');
+    state.mode = e.target.dataset.mode;
+  }
+});
+
+document.getElementById('temp-slider').addEventListener('input', e => {
+  state.temperature = parseFloat(e.target.value);
+  document.getElementById('temp-val').textContent = state.temperature.toFixed(1);
+});
+
+document.getElementById('new-thread-btn').addEventListener('click', newThread);
+
+document.getElementById('export-btn').addEventListener('click', () => {
+  const thread = getCurrentThread();
+  if(!thread) return;
+  let md = `# ${thread.title}\n\n`;
+  thread.messages.forEach(m => {
+    md += `**${m.role}:**\n\n${m.content}\n\n---\n\n`;
+  });
+  const blob = new Blob([md], {type: 'text/markdown'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = thread.title.replace(/\s+/g,'_') + '.md';
+  a.click();
+});
+
+document.getElementById('file-btn').addEventListener('click', () => {
+  document.getElementById('file-input').click();
+});
+
+document.getElementById('file-input').addEventListener('change', async e => {
+  const files = Array.from(e.target.files);
+  for(const file of files){
+    const text = await readFileAsText(file);
+    state.attachments.push({ name: file.name, content: text });
+  }
+  renderAttachRow();
+  e.target.value = '';
+});
+
+function readFileAsText(file){
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.slice(0, 12000));
+    reader.onerror = () => resolve('');
+    reader.readAsText(file);
+  });
+}
+
+function renderAttachRow(){
+  const row = document.getElementById('attach-row');
+  row.innerHTML = '';
+  state.attachments.forEach((f, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'attach-chip';
+    chip.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> ${escapeHtml(f.name)} <button onclick="removeAttachment(${i})">×</button>`;
+    row.appendChild(chip);
+  });
+}
+
+function removeAttachment(i){
+  state.attachments.splice(i, 1);
+  renderAttachRow();
+}
+
+const input = document.getElementById('msg-input');
+input.addEventListener('input', () => {
+  input.style.height = 'auto';
+  input.style.height = Math.min(input.scrollHeight, 160) + 'px';
+});
+input.addEventListener('keydown', e => {
+  if(e.key === 'Enter' && !e.shiftKey){
+    e.preventDefault();
+    handleSend();
+  }
+});
+document.getElementById('send-btn').addEventListener('click', handleSend);
+
+async function handleSend(){
+  const text = input.value.trim();
+  if(!text && state.attachments.length === 0) return;
+  if(!state.connected){
+    alert('Not connected to Ollama. Start it and reload.');
+    return;
+  }
+  if(!state.currentThreadId) newThread();
+
+  const thread = getCurrentThread();
+  let content = text;
+
+  thread.messages.push({
+    role: 'user',
+    content: content,
+    files: state.attachments.length ? [...state.attachments] : null
+  });
+
+  if(thread.messages.length === 1){
+    thread.title = text.slice(0, 40) || (state.attachments[0]?.name || 'new chat');
+  }
+
+  const attachmentsForPrompt = state.attachments;
+  state.attachments = [];
+  renderAttachRow();
+  input.value = '';
+  input.style.height = 'auto';
+  saveThreads();
+  renderThreadList();
+  renderMessages();
+
+  await sendToModel(attachmentsForPrompt);
+}
+
+async function sendToModel(attachments){
+  const thread = getCurrentThread();
+  const container = document.getElementById('messages');
+
+  const typingRow = document.createElement('div');
+  typingRow.className = 'msg-row assistant';
+  typingRow.innerHTML = `<div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  container.appendChild(typingRow);
+  container.scrollTop = container.scrollHeight;
+
+  let systemPrompt = MODE_PROMPTS[state.mode];
+  let userContent = thread.messages[thread.messages.length - 1].content;
+
+  if(attachments && attachments.length){
+    let fileBlock = attachments.map(f => `--- file: ${f.name} ---\n${f.content}`).join('\n\n');
+    userContent = `${userContent}\n\n${fileBlock}`;
+  }
+
+  const apiMessages = [{ role: 'system', content: systemPrompt }];
+  thread.messages.slice(0, -1).forEach(m => apiMessages.push({ role: m.role, content: m.content }));
+  apiMessages.push({ role: 'user', content: userContent });
+
+  const startTime = Date.now();
+  let assistantText = '';
+
+  try{
+    const res = await fetch(OLLAMA_URL + '/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: state.model,
+        messages: apiMessages,
+        stream: true,
+        options: { temperature: state.temperature }
+      })
+    });
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    typingRow.remove();
+
+    const row = document.createElement('div');
+    row.className = 'msg-row assistant';
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    row.appendChild(bubble);
+    container.appendChild(row);
+
+    let tokenCount = 0;
+    let buffer = '';
+    while(true){
+      const { done, value } = await reader.read();
+      if(done) break;
+      buffer += decoder.decode(value, {stream: true});
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+      for(const line of lines){
+        if(!line.trim()) continue;
+        try{
+          const json = JSON.parse(line);
+          if(json.message && json.message.content){
+            assistantText += json.message.content;
+            tokenCount++;
+            bubble.innerHTML = marked.parse(assistantText);
+            container.scrollTop = container.scrollHeight;
+          }
+        } catch(e){}
+      }
+    }
+
+    const elapsed = (Date.now() - startTime) / 1000;
+    const speed = elapsed > 0 ? (tokenCount / elapsed).toFixed(1) : '0';
+    document.getElementById('status-speed').textContent = speed + ' tok/s';
+
+    thread.messages.push({ role: 'assistant', content: assistantText });
+    saveThreads();
+    renderMessages();
+
+  } catch(e){
+    typingRow.remove();
+    const banner = document.createElement('div');
+    banner.className = 'error-banner';
+    banner.textContent = 'Connection lost — make sure Ollama is running, then try again.';
+    container.appendChild(banner);
+    checkConnection();
+  }
+}
+
+checkConnection();
+setInterval(checkConnection, 8000);
+if(state.threads.length === 0){
+  newThread();
+} else {
+  state.currentThreadId = state.threads[0].id;
+}
+renderThreadList();
+renderMessages();
+</script>
+</body>
+</html>

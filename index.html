@@ -12,17 +12,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
 <style>
   :root{
-    --bg: #0F1411;
-    --panel: #161D19;
-    --card: #1B231E;
-    --border: #2A332D;
-    --text: #E8E6DE;
-    --text-dim: #7A8B82;
-    --text-faint: #4D5750;
-    --sage: #5C7A6B;
-    --sage-bright: #8AAE9A;
-    --amber: #C4794A;
-    --danger: #B05C52;
+    --bg: #000000;
+    --panel: #000000;
+    --card: #000000;
+    --border: #000000;
+    --text: #FFFFFF;
+    --text-dim: #FFFFFF;
+    --text-faint: #FFFFFF;
+    --sage: #FFFFFF;
+    --sage-bright: #FFFFFF;
+    --amber: #FFFFFF;
+    --danger: #FFFFFF;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);
@@ -47,12 +47,12 @@
     display:flex;align-items:center;gap:8px;
   }
   .brand .dot{width:6px;height:6px;border-radius:50%;background:var(--sage-bright);
-    box-shadow:0 0 0 0 rgba(138,174,154,0.6);
+    box-shadow:0 0 0 0 rgba(255, 255, 255, 0.6);
     animation:pulse 2.2s infinite;}
   @keyframes pulse{
-    0%{box-shadow:0 0 0 0 rgba(138,174,154,0.5);}
-    70%{box-shadow:0 0 0 6px rgba(138,174,154,0);}
-    100%{box-shadow:0 0 0 0 rgba(138,174,154,0);}
+    0%{box-shadow:0 0 0 0 rgba(0, 0, 0, 0.5);}
+    70%{box-shadow:0 0 0 6px rgba(0, 0, 0, 0);}    
+    100%{box-shadow:0 0 0 0 rgba(255,255,255,0);}    
   }
 
   .status-card{
@@ -99,7 +99,7 @@
     font-size:11px;padding:5px 10px;border-radius:14px;border:1px solid var(--border);
     color:var(--text-dim);cursor:pointer;background:transparent;font-family:inherit;
   }
-  .pill.active{background:var(--sage);border-color:var(--sage);color:#0F1411;}
+  .pill.active{background:var(--sage);border-color:var(--sage);color:#000000;}
   .pill:hover:not(.active){border-color:var(--sage);}
 
   /* Context bar */
@@ -197,9 +197,9 @@
   .bubble{
     max-width:78%;padding:12px 16px;border-radius:8px;font-size:14.5px;line-height:1.6;
   }
-  .msg-row.user .bubble{background:var(--sage);color:#0F1411;}
+  .msg-row.user .bubble{background:var(--sage);color:#000000;}
   .msg-row.assistant .bubble{background:var(--card);border:1px solid var(--border);color:var(--text);}
-  .bubble pre{background:#0B0F0D;border:1px solid var(--border);border-radius:6px;padding:10px;overflow-x:auto;font-size:13px;}
+  .bubble pre{background:#000000;border:1px solid var(--border);border-radius:6px;padding:10px;overflow-x:auto;font-size:13px;}
   .bubble code{font-family:'JetBrains Mono',monospace;}
   .bubble p{margin:0 0 8px;}
   .bubble p:last-child{margin-bottom:0;}
@@ -246,7 +246,7 @@
     flex-shrink:0;
   }
   .icon-btn:hover{border-color:var(--sage);color:var(--sage-bright);}
-  #send-btn{background:var(--sage);border:none;color:#0F1411;}
+  #send-btn{background:var(--sage);border:none;color:#000000;}
   #send-btn:hover{background:var(--sage-bright);}
   #send-btn:disabled{opacity:0.4;cursor:default;}
   #stop-btn{background:var(--danger);border:none;color:#fff;display:none;}
@@ -263,7 +263,7 @@
   .empty-state p{max-width:340px;font-size:13.5px;line-height:1.6;color:var(--text-dim);}
 
   .error-banner{
-    background:rgba(176,92,82,0.12);border:1px solid rgba(176,92,82,0.4);color:#D49389;
+    background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);color:#FFFFFF;
     border-radius:6px;padding:10px 14px;font-size:12.5px;max-width:720px;margin:0 auto 10px;
     font-family:'JetBrains Mono',monospace;
   }
@@ -280,7 +280,7 @@
   .think-header{
     display:flex;align-items:center;gap:7px;
     padding:7px 11px;
-    background:rgba(92,122,107,0.08);
+    background:rgba(255,255,255,0.06);
     cursor:pointer;
     user-select:none;
     color:var(--text-faint);
@@ -512,7 +512,7 @@ function applyThinkToggleUI(){
   if(state.think){
     knob.style.transform = 'translateX(18px)';
     knob.style.background = 'var(--sage-bright)';
-    btn.style.background  = 'rgba(92,122,107,0.3)';
+    btn.style.background  = 'rgba(255,255,255,0.3)';
     btn.style.borderColor = 'var(--sage)';
   } else {
     knob.style.transform = 'translateX(0)';
